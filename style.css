@@ -1,3 +1,55 @@
-#display{
-    background-color: aquamarine;
+body{
+    background-color: aqua;
 }
+
+.container{
+    margin: 5rem;
+    display: grid;
+    place-content: center;
+    grid-template-columns: repeat(4, 30px);
+    grid-template-rows: repeat(6, 30px);
+}
+
+#add{
+    grid-row-start: 2;
+    grid-row-end: 4;
+    grid-column-start: 4;
+    grid-column-end: 5;
+}
+
+#subtract{
+    grid-row-start: 4;
+    grid-row-end: 6;
+    grid-column-start: 4;
+    grid-column-end: 5;
+}
+
+#multiply, #divide, #percentage{
+    grid-row-start: 2;
+}
+
+#operate{
+    grid-column-start: 3;
+    grid-column-end: 5;
+}
+
+#display{
+    background-color: gainsboro;
+    grid-column-start: 1;
+    grid-column-end: 5;
+}
+
+/*
+.keypad{
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+}
+
+
+.numpad{
+    display: grid;
+    width: 300px;
+    height: 400px;
+    grid-template-columns: auto auto auto;
+}
+*/
