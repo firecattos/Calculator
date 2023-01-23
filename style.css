@@ -1,31 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400&display=swap');
 body{
     background-color: aqua;
+    font-family: 'Unbounded', cursive;
 }
 
 .container{
-    margin: 5rem;
+    margin: auto;
+    margin-top: 5rem;
+    max-width: 240px;
+    height: 360px;
     display: grid;
     place-content: center;
-    grid-template-columns: repeat(4, 30px);
-    grid-template-rows: repeat(6, 30px);
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+}
+
+#backspace{
+    grid-column-start: 3;
+    grid-column-end: 5;
 }
 
 #add{
-    grid-row-start: 2;
-    grid-row-end: 4;
+    grid-row-start: 3;
+    grid-row-end: 5;
     grid-column-start: 4;
     grid-column-end: 5;
 }
 
 #subtract{
-    grid-row-start: 4;
-    grid-row-end: 6;
+    grid-row-start: 5;
+    grid-row-end: 7;
     grid-column-start: 4;
     grid-column-end: 5;
 }
 
 #multiply, #divide, #percentage{
-    grid-row-start: 2;
+    grid-row-start: 3;
 }
 
 #operate{
