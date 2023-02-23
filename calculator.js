@@ -1,11 +1,15 @@
 const operator=document.querySelectorAll(".operators");
 operator.forEach((button)=>{
-    button.addEventListener('click', takeInput);
+    button.addEventListener('click', ()=>{
+        takeInput(button.id);
+    });
 });
 
 const numpad=document.querySelectorAll(".numbers");
 numpad.forEach((button)=>{
-    button.addEventListener('click', displayNumber);
+    button.addEventListener('click', ()=>{
+        displayNumber(button.id);
+    });
 });
 
 const displayField=document.getElementById("display");
@@ -22,6 +26,8 @@ clearDisplay.addEventListener('click', ()=>{
 const backspace=document.getElementById("backspace");
 backspace.addEventListener('click', bksp);
 
+document.addEventListener('keydown', keyDisplay);
+
 let math=[];
 let terminator=false, resultCheck=false, operatorCheck=false, periodCheck=false;
 
@@ -32,7 +38,7 @@ function bksp(){    //Backspace
     else if(oldDisplay.length===1) displayField.textContent=''
 }
 
-function displayNumber(e){  //Displays the number that is clicked
+function displayNumber(num){  //Displays the number that is clicked
     if(terminator===true){
         resetCalc();
         terminator=false;
@@ -44,21 +50,20 @@ function displayNumber(e){  //Displays the number that is clicked
     }
     if(operatorCheck===true) operatorCheck=false;
 
-    if(e.target.id==="period"){ //Correctly displays the dot and disables it after the first insertion in display
+    if(num==="period"){ //Correctly displays the dot and disables it after the first insertion in display
         if(periodCheck===false){
             displayField.textContent+=".";
             periodCheck=true;
         }
         return;
     }
-    displayField.textContent+=e.target.id;
+    displayField.textContent+=num;
 }
 
-function takeInput(e){  //When an operator is clicked, it takes the input and the operator
+function takeInput(operatorId){  //When an operator is clicked, it takes the number and the operator
     if(periodCheck===true) periodCheck=false;
     if(terminator===true){     //Allows user to continue operating with the result, cleaning all the rest...
         let swapDisp=displayField.textContent;
-        //console.log("resetfunc call");
         if(swapDisp.charAt(0)==='C'){   //...If a valid result is displayed
             resetCalcTotal();
             return;
@@ -66,49 +71,47 @@ function takeInput(e){  //When an operator is clicked, it takes the input and th
         resetCalc();
         terminator=false;
         math.push(swapDisp);
-        math.push(e.target.id);
+        math.push(operatorId);
         displayField.textContent='';
         return;
     }
 
     if(math.length===0){    //First operand check
-        /*math.push(displayField.textContent);
-        math.push(e.target.id);*/
-        pushElement(e);
+        if(displayField.textContent===''){      //Empty display check, assume the value '0' if empty;
+            math.push('0');
+            math.push(operatorId);
+            return;
+        }
+        pushElement(operatorId);
         operatorCheck=true;
         displayField.textContent='';
         return;
     }
 
-    if(operatorCheck===true){  //Check for double operator insertion
-        //console.log("double operator check");
-        math[math.length-1]=e.target.id;
+    if(operatorCheck===true){  //Check for double operator insertion and eventually replaces it with the new one
+        math[math.length-1]=operatorId;
         return;
     }
 
-    /*math.push(displayField.textContent);
-    math.push(e.target.id);*/
-    pushElement(e);
+    pushElement(operatorId);
     operatorCheck=true;
     displayField.textContent='';
-
     let switchId=math.length;
 
     if(math[switchId-1]==='percentage'){
-        let tempPercentage=(parseFloat(math[switchId-4])/100)*parseFloat(math[switchId-2]);
-        console.log("temp percentage: "+tempPercentage);
-        math[switchId-2]=tempPercentage;
+        let percentageValue=(parseFloat(math[switchId-4])/100)*parseFloat(math[switchId-2]);
+//        console.log("Percentage value: "+percentageValue);
+        math[switchId-2]=percentageValue;
         terminator=true;
     }
-    computeOperation(switchId);
 
+    computeOperation(switchId);
     resultCheck=true;
-    
     if(math[switchId-1]==='operate')
         terminator=true;
 }
 
-function computeOperation(switchId){
+function computeOperation(switchId){    //Actually does the math required other than the percentage calculation
     switch(math[switchId-3]){
         case 'add':
             displayField.textContent=parseFloat(math[switchId-4])+parseFloat(math[switchId-2]);
@@ -134,9 +137,9 @@ function computeOperation(switchId){
     }
 }
 
-function pushElement(e){
+function pushElement(operatorId){   //Puts number and operator in the operands array
     math.push(displayField.textContent);
-    math.push(e.target.id);
+    math.push(operatorId);
 }
 
 function resetCalcTotal(){   //Completely resets the calculator
@@ -151,4 +154,43 @@ function resetCalc(){   //Resets only the operations history
     displayField.textContent='';
     math=[];
     return;
+}
+
+function keyDisplay(e){     //Takes eventual input from the keyboard
+    if(e.key>=0 && e.key<=9){
+        displayNumber(e.key);
+        return;
+    }
+    switch(e.key){
+        case '.':
+            displayNumber("period");
+            break;
+        //Operators
+        case '+':
+            takeInput("add");
+            break;
+        case '-':
+            takeInput("subtract");
+            break;
+        case '*':
+            takeInput("multiply");
+            break;
+        case '/':
+            e.preventDefault();     //Prevents the "Quick Find" box from being called when running on Firefox
+            takeInput("divide");
+            break;
+        case '%':
+            takeInput("percentage");
+            break;
+        case 'Enter':
+            takeInput("operate");
+            break;
+        //Functions
+        case 'Backspace':
+            bksp();
+            break;
+        case 'Delete':
+            resetCalcTotal();
+            break;
+    }
 }
