@@ -12,8 +12,13 @@ numpad.forEach((button)=>{
     });
 });
 
-const displayField=document.getElementById("display");
-
+//const displayField=document.getElementById("display");
+const displayField=document.getElementById("lowerRow");
+//Rows test
+/*
+const upperDisp=document.getElementById("upperRow");
+const lowerDisp=document.getElementById("lowerRow");
+*/
 const resetButton=document.getElementById("reset");
 resetButton.addEventListener('click', resetCalcTotal);
 

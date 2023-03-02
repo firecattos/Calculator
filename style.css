@@ -1,7 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400&display=swap');
+/*@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400&display=swap');
+/*CHANGE FONT WEIGHT MANAGEMENT*/
+
+@font-face{
+    font-family: "Digital-7";
+    src: url(font/digital-7.ttf);
+}
+
 body{
     background-color: aqua;
-    font-family: 'Unbounded', cursive;
+    /*font-family: 'Unbounded', cursive;*/
+    /*font-family: "Digital-7";*/
 }
 
 .container{
@@ -44,9 +52,20 @@ body{
 }
 
 #display{
+    font-family: "Digital-7";
     background-color: gainsboro;
     grid-column-start: 1;
     grid-column-end: 5;
+
+    display: grid;
+    grid-template-rows: 35% 65%;
+}
+
+#display #upperRow{
+    font-size-adjust: 0.75;
+}
+#display #lowerRow{
+    font-size-adjust: 1.25;
 }
 
 /*
