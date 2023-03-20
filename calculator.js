@@ -12,10 +12,6 @@ numpad.forEach((button)=>{
     });
 });
 
-//const lowerDisp=document.getElementById("display");
-//const lowerDisp=document.getElementById("lowerRow");
-//Rows test
-
 const upperDisp=document.getElementById("upperRow");
 const lowerDisp=document.getElementById("lowerRow");
 
@@ -24,7 +20,6 @@ resetButton.addEventListener('click', resetCalcTotal);
 
 const clearDisplay=document.getElementById("clearDisp");
 clearDisplay.addEventListener('click', ()=>{
-    //lowerDisp.textContent='';
     resetDisplays();
     if(periodCheck===true) periodCheck=false;
 });
@@ -39,7 +34,8 @@ let terminator=false, resultCheck=false, operatorCheck=false, periodCheck=false;
 
 function bksp(){    //Backspace
     let oldDisplay=lowerDisp.textContent;
-    if(oldDisplay.charAt(0)==='C') lowerDisp.textContent='';
+    if(oldDisplay.charAt(0)==='C') resetCalc();
+    else if(terminator===true) return;
     else if(oldDisplay.length>1) lowerDisp.textContent=oldDisplay.slice(0, oldDisplay.length-1);
     else if(oldDisplay.length===1) lowerDisp.textContent=''
 }
@@ -69,26 +65,25 @@ function displayNumber(num){  //Displays the number that is clicked
 function takeInput(operatorId){  //When an operator is clicked, it takes the number and the operator
     if(periodCheck===true) periodCheck=false;
     if(terminator===true){     //Allows user to continue operating with the result, cleaning all the rest...
+        if(operatorId==="operate") return;
         let lowerSwap=lowerDisp.textContent;
         if(lowerSwap.charAt(0)==='C'){   //...If a valid result is displayed
             resetCalcTotal();
             return;
         }
         let upperSwap=upperDisp.textContent;
-        console.log("upper swap: "+upperSwap); //logic ok
         resetCalc();
         terminator=false;
         lastOperation(upperSwap, lowerSwap, operatorId);
-        /*math.push(swapDisp);
-        math.push(operatorId);
-        lowerDisp.textContent='';*/
         return;
     }
 
     if(math.length===0){    //First operand check
+        if(operatorId==="operate") return;
         if(lowerDisp.textContent===''){      //Empty display check, assume the value '0' if empty;
             math.push('0');
             math.push(operatorId);
+            upperDisp.textContent+="0+";
             return;
         }
         pushElement(operatorId);
@@ -97,7 +92,8 @@ function takeInput(operatorId){  //When an operator is clicked, it takes the num
         return;
     }
 
-    if(operatorCheck===true){  //Check for double operator insertion and eventually replaces it with the new one
+    if(operatorCheck===true){   //Check for double operator insertion and eventually replaces it
+                                //with the new one
         math[math.length-1]=operatorId;
         return;
     }
@@ -107,11 +103,14 @@ function takeInput(operatorId){  //When an operator is clicked, it takes the num
     lowerDisp.textContent='';
     let switchId=math.length;
 
-    if(math[switchId-1]==='percentagte'){
+    if(math[switchId-1]==='percentage'){    //Percentage calculation
         let percentageValue=(parseFloat(math[switchId-4])/100)*parseFloat(math[switchId-2]);
-//        console.log("Percentage value: "+percentageValue);
+        upperDisp.textContent+=" ("+percentageValue+")=";
         math[switchId-2]=percentageValue;
+        computeOperation(switchId);
+        resultCheck=true;
         terminator=true;
+        return;
     }
 
     computeOperation(switchId);
@@ -120,7 +119,8 @@ function takeInput(operatorId){  //When an operator is clicked, it takes the num
         terminator=true;
 }
 
-function computeOperation(switchId){    //Actually does the math required other than the percentage calculation
+function computeOperation(switchId){    //Actually does the math required other than the
+                                        //percentage calculation
     switch(math[switchId-3]){
         case 'add':
             lowerDisp.textContent=parseFloat(math[switchId-4])+parseFloat(math[switchId-2]);
@@ -146,32 +146,11 @@ function computeOperation(switchId){    //Actually does the math required other 
     }
 }
 
-function pushElement(operatorId){   //Puts number and operator in the operands array
+function pushElement(operatorId){   //Puts number and operator in the operands array and populate the
+                                    //upper display
     math.push(lowerDisp.textContent);
     math.push(operatorId);
-    //Populate upper display
-    let operator=operatorSymbol(operatorId);
-    /*switch(operatorId){     //create separate function
-        case "add":
-            operatorSymbol="+";
-            break;
-        case "subtract":
-            operatorSymbol="-";
-            break;
-        case "multiply":
-            operatorSymbol="*";
-            break;
-        case "divide":
-            operatorSymbol="/";
-            break;
-        case "percentage":
-            operatorSymbol="%";
-            break;
-        case "operate":
-            operatorSymbol="=";
-            break;
-    }*/
-    upperDisp.textContent+=lowerDisp.textContent+operator;
+    upperDisp.textContent+=lowerDisp.textContent+operatorSymbol(operatorId);
 }
 
 function operatorSymbol(operatorId){
@@ -192,11 +171,6 @@ function operatorSymbol(operatorId){
 
 }
 
-function resetDisplays(){
-    upperDisp.textContent='';
-    lowerDisp.textContent='';
-}
-
 function resetCalcTotal(){   //Completely resets the calculator
     resetCalc();
     terminator=false;
@@ -206,15 +180,16 @@ function resetCalcTotal(){   //Completely resets the calculator
 }
 
 function resetCalc(){   //Resets only the operations history
-    //lowerDisp.textContent='';
-    /*upperDisp.textContent='';
-    lowerDisp.textContent='';*/
     resetDisplays();
     math=[];
-    //return;
 }
 
-function lastOperation(upperSwap, lowerSwap, operatorId){ //todo
+function resetDisplays(){   //Resets both displays
+    upperDisp.textContent='';
+    lowerDisp.textContent='';
+}
+
+function lastOperation(upperSwap, lowerSwap, operatorId){
     math.push(lowerSwap);
     math.push(operatorId);
     upperDisp.textContent+=upperSwap+lowerSwap+operatorSymbol(operatorId);
