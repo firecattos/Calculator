@@ -20,7 +20,8 @@ resetButton.addEventListener('click', resetCalcTotal);
 
 const clearDisplay=document.getElementById("clearDisp");
 clearDisplay.addEventListener('click', ()=>{
-    resetDisplays();
+    lowerDisp.textContent='';
+    if(terminator===true) resetCalc();
     if(periodCheck===true) periodCheck=false;
 });
 
