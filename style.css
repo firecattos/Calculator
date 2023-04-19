@@ -1,14 +1,6 @@
-/*@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400&display=swap');*/
-
 @font-face{
     font-family: "Digital-7";
     src: url(font/digital-7.ttf);
-}
-
-body{
-    background-color: aqua;
-    /*font-family: 'Unbounded', cursive;*/
-    /*font-family: "Digital-7";*/
 }
 
 .container{
@@ -20,10 +12,12 @@ body{
     place-content: center;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(7, 1fr);
-
-    border-style: outset;
-    grid-gap: 0.07em;
+    grid-gap: 0.07rem;
     background-color: gray;
+    border-style: solid;
+    border-color: #b2b2b2;
+    border-width: 0.4rem;
+    border-radius: 5px;
 }
 
 button{
@@ -64,10 +58,11 @@ button{
     background-color: gainsboro;
     grid-column-start: 1;
     grid-column-end: 5;
-
     text-align: end;
     display: grid;
     grid-template-rows: 35% 65%;
+    border-radius: 10px;
+    margin-bottom: 3px;
 }
 
 #display #upperRow{
@@ -75,4 +70,8 @@ button{
 }
 #display #lowerRow{
     font-size-adjust: 1.25;
+}
+
+.reset, .clear, .backspace, #operate{
+    background-color: #f66;
 }
